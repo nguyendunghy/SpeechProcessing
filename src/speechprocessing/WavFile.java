@@ -106,7 +106,7 @@ public class WavFile {
                 8 + // Data ID and size
                 dataChunkSize;
 
-		// Chunks must be word aligned, so if odd number of audio data bytes
+        // Chunks must be word aligned, so if odd number of audio data bytes
         // adjust the main chunk size
         if (dataChunkSize % 2 == 1) {
             mainChunkSize += 1;
@@ -147,12 +147,12 @@ public class WavFile {
 
         // Calculate the scaling factor for converting to a normalised double
         if (wavFile.validBits > 8) {
-			// If more than 8 validBits, data is signed
+            // If more than 8 validBits, data is signed
             // Conversion required multiplying by magnitude of max positive value
             wavFile.floatOffset = 0;
             wavFile.floatScale = Long.MAX_VALUE >> (64 - wavFile.validBits);
         } else {
-			// Else if 8 or less validBits, data is unsigned
+            // Else if 8 or less validBits, data is unsigned
             // Conversion required dividing by max positive value
             wavFile.floatOffset = 1;
             wavFile.floatScale = 0.5 * ((1 << wavFile.validBits) - 1);
@@ -177,6 +177,7 @@ public class WavFile {
 
         // Read the first 12 bytes of the file
         int bytesRead = wavFile.iStream.read(wavFile.buffer, 0, 12);
+
         if (bytesRead != 12) {
             throw new WavFileException("Not enough wav file bytes for header");
         }
@@ -217,7 +218,7 @@ public class WavFile {
             long chunkID = getLE(wavFile.buffer, 0, 4);
             chunkSize = getLE(wavFile.buffer, 4, 4);
 
-			// Word align the chunk size
+            // Word align the chunk size
             // chunkSize specifies the number of bytes holding data. However,
             // the data should be word aligned (2 bytes) so we need to calculate
             // the actual number of bytes in the chunk
@@ -261,21 +262,21 @@ public class WavFile {
                     throw new WavFileException("Block Align does not agree with bytes required for validBits and number of channels");
                 }
 
-				// Account for number of format bytes and then skip over
+                // Account for number of format bytes and then skip over
                 // any extra format bytes
                 numChunkBytes -= 16;
                 if (numChunkBytes > 0) {
                     wavFile.iStream.skip(numChunkBytes);
                 }
             } else if (chunkID == DATA_CHUNK_ID) {
-				// Check if we've found the format chunk,
+                // Check if we've found the format chunk,
                 // If not, throw an exception as we need the format information
                 // before we can read the data chunk
                 if (foundFormat == false) {
                     throw new WavFileException("Data chunk found before Format chunk");
                 }
 
-				// Check that the chunkSize (wav data length) is a multiple of the
+                // Check that the chunkSize (wav data length) is a multiple of the
                 // block align (bytes per frame)
                 if (chunkSize % wavFile.blockAlign != 0) {
                     throw new WavFileException("Data Chunk size is not multiple of Block Align");
@@ -301,12 +302,12 @@ public class WavFile {
 
         // Calculate the scaling factor for converting to a normalised double
         if (wavFile.validBits > 8) {
-			// If more than 8 validBits, data is signed
+            // If more than 8 validBits, data is signed
             // Conversion required dividing by magnitude of max negative value
             wavFile.floatOffset = 0;
             wavFile.floatScale = 1 << (wavFile.validBits - 1);
         } else {
-			// Else if 8 or less validBits, data is unsigned
+            // Else if 8 or less validBits, data is unsigned
             // Conversion required dividing by max positive value
             wavFile.floatOffset = -1;
             wavFile.floatScale = 0.5 * ((1 << wavFile.validBits) - 1);
@@ -320,7 +321,7 @@ public class WavFile {
         return wavFile;
     }
 
-	// Get and Put little endian data from local buffer
+    // Get and Put little endian data from local buffer
     // ------------------------------------------------
     private static long getLE(byte[] buffer, int pos, int numBytes) {
         numBytes--;
@@ -342,7 +343,7 @@ public class WavFile {
         }
     }
 
-	// Sample Writing and Reading
+    // Sample Writing and Reading
     // --------------------------
     private void writeSample(long val) throws IOException {
         for (int b = 0; b < bytesPerSample; b++) {
@@ -382,7 +383,7 @@ public class WavFile {
         return val;
     }
 
-	// Integer
+    // Integer
     // -------
     public int readFrames(int[] sampleBuffer, int numFramesToRead) throws IOException, WavFileException {
         return readFrames(sampleBuffer, 0, numFramesToRead);
@@ -484,7 +485,7 @@ public class WavFile {
         return numFramesToWrite;
     }
 
-	// Long
+    // Long
     // ----
     public int readFrames(long[] sampleBuffer, int numFramesToRead) throws IOException, WavFileException {
         return readFrames(sampleBuffer, 0, numFramesToRead);
@@ -586,7 +587,7 @@ public class WavFile {
         return numFramesToWrite;
     }
 
-	// Double
+    // Double
     // ------
     public int readFrames(double[] sampleBuffer, int numFramesToRead) throws IOException, WavFileException {
         return readFrames(sampleBuffer, 0, numFramesToRead);
