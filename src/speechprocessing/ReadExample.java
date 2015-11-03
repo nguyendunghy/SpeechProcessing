@@ -4,7 +4,7 @@ import java.io.*;
 
 public class ReadExample {
 
-    public static String fName = "C:\\Users\\NguyenVanDung\\Documents\\GitHub\\SpeechProcessing\\a97.wav";
+    public static String fName = "C:\\Users\\NguyenVanDung\\Documents\\GitHub\\SpeechProcessing\\a96.wav";
 
     public static void main(String[] args) {
         try {
@@ -18,7 +18,7 @@ public class ReadExample {
             int numChannels = wavFile.getNumChannels();
 
             // Create a buffer of 100 frames
-            long[] buffer = new long[200 * numChannels];
+            long[] buffer = new long[(int) wavFile.getNumFrames() * numChannels];
 
             int framesRead;
             //double min = Double.MAX_VALUE;
@@ -39,9 +39,12 @@ public class ReadExample {
 //                }
 //            } while (framesRead != 0);
             //Read frames into buffer
-            framesRead = wavFile.readFrames(buffer, 200);
+            framesRead = wavFile.readFrames(buffer, (int) wavFile.getNumFrames());
             for (int i = 0; i < framesRead; i++) {
-                System.out.print(((int) buffer[i])+ "       ");
+                System.out.print(((int) buffer[i]) + " ");
+                if (i != 0 && i % 50 == 0) {
+                    System.out.println("");
+                }
             }
             //Close the wavFile 
             wavFile.close();

@@ -4,7 +4,7 @@ import java.io.*;
 
 public class WriteExample {
 
-    public static String foutName = "C:\\Users\\NguyenVanDung\\Documents\\GitHub\\SpeechProcessing\\a97.wav";
+    public static String foutName = "C:\\Users\\NguyenVanDung\\Documents\\GitHub\\SpeechProcessing\\a96.wav";
 
     public static void main(String[] args) {
         try {

@@ -77,7 +77,11 @@ public class LevinsonRecursion {
         //phan tu tren duong cheo chinh khac 0
         if (matrix[0][0] == 0) {
             System.out.println("The main diagonal equal 0");
-            return null;
+            float[] result = new float[N];
+            for (int i = 0; i < N; i++) {
+                result[i] = 0;
+            }
+            return result;
         }
 
         F.add(1 / matrix[0][0]);
