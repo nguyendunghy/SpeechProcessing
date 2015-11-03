@@ -17,18 +17,15 @@ public class LevinsonRecursion {
 
     private float[][] matrix;  // matrix toeplitz
     private float[] Y;         // vector Y
-    private float[] X;         // vector X
     private int N;             // chieu cua vetor X,Y
 
-    public LevinsonRecursion(float[][] matrix, float[] X, float[] Y, int N) {
-        if (X.length != N || Y.length != N || matrix.length * matrix[0].length != N * N) {
+    public LevinsonRecursion(float[][] matrix, float[] Y, int N) {
+        if (Y.length != N || matrix.length * matrix[0].length != N * N) {
             System.out.println("Input error , error in matrix or vector length");
         } else {
             this.matrix = matrix;
-            this.X = X;
             this.Y = Y;
             this.N = N;
-
         }
     }
 
@@ -41,7 +38,6 @@ public class LevinsonRecursion {
          *kiem tra cac phan tu cua duong cheo cua nua duoi ma tran
          *ta so sanh voi cac phan tu cuoi cung cua duong treo lam tren hang cuoi cung
          *cua ma tran*/
-
         for (int i = 0; i < N; i++) {
             int j;
             int t;
@@ -138,6 +134,7 @@ public class LevinsonRecursion {
             }
 
         }
+        //convert sang mang mot chieu
         float[] result = new float[N];
         for (int i = 0; i < N; i++) {
             result[i] = XX.get(i);
@@ -167,8 +164,8 @@ public class LevinsonRecursion {
             new float[]{21, 22, 11, 6, 1}};
 
         float[] X = {1, 2, 3, 4, 5};
-        float[] Y = {16, 17, 18, 19, 110};
-        LevinsonRecursion le = new LevinsonRecursion(matrix, X, Y, 5);
+        float[] Y = {16, 17, 18, 19, 100};
+        LevinsonRecursion le = new LevinsonRecursion(matrix, Y, 5);
         for (int i = 0;
                 i < 3; i++) {
             for (int j = 0; j < 3; j++) {
