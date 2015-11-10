@@ -22,7 +22,7 @@ public class SpeechProcessing {
     //Trong bài này file wav có tốc độ lấy mẫu là 10000 mẫu/s.Xét cửa sổ 20ms và xét độ dịch 10ms
     public static int N = 100; //Số mẫu được xét trong một cửa sổ 
     public static int T = 100; //Độ dịch của cửa sổ
-    public static int P = 50; //Xấp xỉ một mẫu tín hiệu bằng P mẫu trước đó
+    public static int P = 12; //Xấp xỉ một mẫu tín hiệu bằng P mẫu trước đó p khoảng 12 đến 18
     public static int count = 3450;
     public static float Coefficient[][]; //Mảng chứa giá trị các bộ trọng số lấy ra từ các cửa sổ
     public static float Error[][];//Mảng chứa sai số
@@ -67,7 +67,7 @@ public class SpeechProcessing {
 
     }
 
-    //Hàm Khôi phục lại dữ liệu từu bộ trọng số và bộ sai số tiên đoán
+    //Hàm Khôi phục lại dữ liệu từ bộ trọng số và bộ sai số tiên đoán
     public void restoreWav() {
         long[] wav = new long[Error.length * Error[0].length];
         int count = 0;
