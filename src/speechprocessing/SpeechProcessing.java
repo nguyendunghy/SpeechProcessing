@@ -20,12 +20,13 @@ public class SpeechProcessing {
     public static String fName = "C:\\Users\\NguyenVanDung\\Documents\\GitHub\\SpeechProcessing\\a96.wav";
     public static String foutName = "C:\\Users\\NguyenVanDung\\Documents\\GitHub\\SpeechProcessing\\a97.wav";
     //Trong bài này file wav có tốc độ lấy mẫu là 10000 mẫu/s.Xét cửa sổ 20ms và xét độ dịch 10ms
-    public static int N = 100; //Số mẫu được xét trong một cửa sổ 
-    public static int T = 100; //Độ dịch của cửa sổ
+    public static int N = 200; //Số mẫu được xét trong một cửa sổ 
+    public static int T = 200; //Độ dịch của cửa sổ
     public static int P = 12; //Xấp xỉ một mẫu tín hiệu bằng P mẫu trước đó p khoảng 12 đến 18
     public static int count = 3450;
     public static float Coefficient[][]; //Mảng chứa giá trị các bộ trọng số lấy ra từ các cửa sổ
-    public static float Error[][];//Mảng chứa sai số
+    public static double Error[][];//Mảng chứa sai số
+    public static long WavValue[];//Mang chua gia tri file
     public static int numChannels;
     public static long numFrames;
     public static int validBits;
@@ -62,7 +63,7 @@ public class SpeechProcessing {
 //            System.out.print(output[i] + " ");
 //        
         SpeechProcessing spe = new SpeechProcessing();
-        spe.extractWavFile();
+        spe.extractWavFile(fName);
         spe.restoreWav();
 
     }
@@ -101,19 +102,21 @@ public class SpeechProcessing {
     }
 
     //Hàm phân tích file wav lấy ra bộ trọng số a và sai số tiên đoán
-    public void extractWavFile() {
+    public void extractWavFile(String file) {
         try {
             // Open the wav file and get the feature of the file
-            WavFile wavFile = WavFile.openWavFile(new File(fName));
+            WavFile wavFile = WavFile.openWavFile(new File(file));
+
             numChannels = wavFile.getNumChannels();
             numFrames = wavFile.getNumFrames();
             validBits = wavFile.getValidBits();
             sampleRate = wavFile.getSampleRate();
 
             long num = wavFile.getNumFrames();
+
             long[] raw = new long[(int) num];
             Coefficient = new float[(int) (num / T + 1)][(int) P];
-            Error = new float[(int) (num / T + 1)][(int) N];
+            Error = new double[(int) (num / T + 1)][(int) N];
             wavFile.readFrames(raw, (int) num);
             for (int i = 0; i <= num / T; i++) {
                 long[] data;
@@ -175,6 +178,20 @@ public class SpeechProcessing {
 
     }
 
+    public void readWavFile() {
+
+        try {
+            WavFile wavFile = WavFile.openWavFile(new File(fName));
+            long num = (int) wavFile.getNumFrames();
+            //Lay mang gia tri file
+            WavValue = new long[(int) num];
+            wavFile.readFrames(WavValue, (int) num);
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+
+    }
+
     //Hàm tổng hợp tiếng nói từ bộ dữ liệu đã biết gồm các bộ trọng số và sai số tiên đoán
     public void writeWavFile(long[] data, int numChannels, long numFrames, int validBits, long sampleRate) {
         try {
@@ -182,9 +199,9 @@ public class SpeechProcessing {
             wavFile.writeFrames(data, data.length);
             wavFile.close();
         } catch (IOException ex) {
-            Logger.getLogger(SpeechProcessing.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.toString());
         } catch (WavFileException ex) {
-            Logger.getLogger(SpeechProcessing.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.toString());
         }
 
     }
