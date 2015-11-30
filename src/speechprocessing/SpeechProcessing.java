@@ -8,8 +8,6 @@ package speechprocessing;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -21,7 +19,7 @@ public class SpeechProcessing {
     public static String foutName = "C:\\Users\\NguyenVanDung\\Documents\\GitHub\\SpeechProcessing\\a97.wav";
     //Trong bài này file wav có tốc độ lấy mẫu là 10000 mẫu/s.Xét cửa sổ 20ms và xét độ dịch 10ms
     public static int N = 200; //Số mẫu được xét trong một cửa sổ 
-    public static int T = 200; //Độ dịch của cửa sổ
+    public static int T = 100; //Độ dịch của cửa sổ
     public static int P = 12; //Xấp xỉ một mẫu tín hiệu bằng P mẫu trước đó p khoảng 12 đến 18
     public static int count = 3450;
     public static float Coefficient[][]; //Mảng chứa giá trị các bộ trọng số lấy ra từ các cửa sổ
@@ -71,10 +69,16 @@ public class SpeechProcessing {
     //Hàm Khôi phục lại dữ liệu từ bộ trọng số và bộ sai số tiên đoán
     public void restoreWav() {
         long[] wav = new long[Error.length * Error[0].length];
+        int realLength = Error[0].length + (Error.length - 1) * (Error[0].length / 2);
+        long[] lastWav = new long[realLength];
+
         int count = 0;
         int row = Coefficient.length;
         int p = Coefficient[0].length;
         int col = Error[0].length;
+
+        double alpha = 1;
+        double beta = 0;
         for (int i = 0; i < row; i++) {
             double[] data = new double[col];
             for (int j = 0; j < col; j++) {
@@ -91,8 +95,26 @@ public class SpeechProcessing {
                 wav[count++] = (long) Math.round(data[t]); //Cho nay phai sua lai neu chuyen sang double
             }                                              //Neu chuyen sang double phai xem phan scale nhu the nao
         }
+        //Tao file wav cuoi
+        int H = Error[0].length / 2;
+        int N = Error[0].length;
+        for (int i = 0; i < lastWav.length; i++) {
+            //neu o cua so dau tien ta khong xu li gi ca
+            if (i < H) {
+                lastWav[i] = wav[i];
+            } else {
+                int pos = i / H;
+                int index1 = (pos - 1) * N + H + i % H;
+                index1 = index1 < wav.length ? index1 : wav.length - 1;
+                int index2 = pos * N + i % H;
+                index2 = index2 < wav.length ? index2 : wav.length - 1;
+                long value1 = wav[index1];
+                long value2 = wav[index2];
+                lastWav[i] = (long) Math.round((alpha * value1 + beta * value2) / (alpha + beta));
+            }
+        }
         //Luu lai file 
-        writeWavFile(wav, numChannels, wav.length, validBits, sampleRate);
+        writeWavFile(lastWav, numChannels, lastWav.length, validBits, sampleRate);
 
         //In gia tri mang wav ra ngoai
         for (int i = 0; i < wav.length; i++) {
